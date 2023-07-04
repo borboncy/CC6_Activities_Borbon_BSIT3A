@@ -1,0 +1,188 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(BorbonAct4App());
+
+class BorbonAct4App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: BorbonHomeScreen(),
+      routes: {
+        '/SKZGallery': (context) => BorbonSKZGallery(),
+      },
+    );
+  }
+}
+
+class BorbonHomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text('♡ #LoveSTAY'),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'W E L C O M E',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal),
+            ),
+            Text(
+              'STAY',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Image.asset(
+              'assets/main.png',
+              width: 375,
+              height: 375,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/SKZGallery');
+              },
+              child: Text('   S T A R T   '),
+              style: ElevatedButton.styleFrom(primary: Colors.black),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BorbonSKZGallery extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: DefaultTabController(
+          length: 8,
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.black,
+              title: Text('SKZ ♡ 8 OR NONE'),
+              bottom: TabBar(
+                isScrollable: true,
+                tabs: [
+                  Tab(text: '❤'),
+                  Tab(text: '❤'),
+                  Tab(text: '❤'),
+                  Tab(text: '❤'),
+                  Tab(text: '❤'),
+                  Tab(text: '❤'),
+                  Tab(text: '❤'),
+                  Tab(text: '❤'),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              children: [
+                buildTabScreen(
+                  'S T R A Y  K I D S',
+                  'BANG CHAN',
+                  'assets/chan.jpg',
+                  '“Like mate stop procrastinating.”',
+                ),
+                buildTabScreen(
+                  'S T R A Y  K I D S',
+                  'LEE KNOW',
+                  'assets/minho.jpg',
+                  '“Let’s all die naturally in a healthy way.”',
+                ),
+                buildTabScreen(
+                  'S T R A Y  K I D S',
+                  'CHANGBIN',
+                  'assets/changbin.jpg',
+                  '“Do not let other people decide for you.”',
+                ),
+                buildTabScreen(
+                  'S T R A Y  K I D S',
+                  'HYUNJIN',
+                  'assets/hyunjin.jpg',
+                  '“I have three versions of English in my mouth.”',
+                ),
+                buildTabScreen(
+                  'S T R A Y  K I D S',
+                  'HAN',
+                  'assets/han.jpg',
+                  '“Even if you fail a test, you are not going down with it.”',
+                ),
+                buildTabScreen(
+                  'S T R A Y  K I D S',
+                  'FELIX',
+                  'assets/felix.jpg',
+                  '“Go at your own pace and we willl rise to the top as one.”',
+                ),
+                buildTabScreen(
+                  'S T R A Y  K I D S',
+                  'SEUNGMIN',
+                  'assets/seungmin.jpg',
+                  '“My dream of becoming a rock star came true.”',
+                ),
+                buildTabScreen(
+                  'S T R A Y  K I D S',
+                  'I.N',
+                  'assets/jeongin.jpg',
+                  '“You cannot be good at everything right from the start.”',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildTabScreen(
+    String BorbonText1,
+    String BorbonText2,
+    String BorbonImagePath,
+    String BorbonText3,
+  ) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            BorbonText1,
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.normal),
+          ),
+          Text(
+            BorbonText2,
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
+          Image.asset(
+            BorbonImagePath,
+            width: 350,
+            height: 350,
+          ),
+          SizedBox(height: 20),
+          Text(
+            BorbonText3,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}

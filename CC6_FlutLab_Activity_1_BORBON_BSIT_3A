@@ -1,64 +1,79 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(BorbonAct1App());
+  runApp(BorbonCalculatorApp());
 }
 
-class BorbonAct1App extends StatelessWidget {
+class BorbonCalculatorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Calculator',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.grey,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: BorbonCalculator(),
+      home: BorbonCalculatorScreen(),
     );
   }
 }
 
-class BorbonCalculator extends StatefulWidget {
+class BorbonCalculatorScreen extends StatefulWidget {
   @override
-  _BorbonCalculatorState createState() => _BorbonCalculatorState();
+  _BorbonCalculatorScreenState createState() => _BorbonCalculatorScreenState();
 }
 
-class _BorbonCalculatorState extends State<BorbonCalculator> {
-  TextEditingController num1Controller = TextEditingController();
-  TextEditingController num2Controller = TextEditingController();
-  String result = '';
+class _BorbonCalculatorScreenState extends State<BorbonCalculatorScreen> {
+  String _displayText = '';
 
-  void BorbonOperation(String operation) {
-    double num1 = double.tryParse(num1Controller.text) ?? 0.0;
-    double num2 = double.tryParse(num2Controller.text) ?? 0.0;
-    double BorbonTotal;
-
-    switch (operation) {
-      case '+':
-        BorbonTotal = num1 + num2;
-        break;
-      case '-':
-        BorbonTotal = num1 - num2;
-        break;
-      case '*':
-        BorbonTotal = num1 * num2;
-        break;
-      case '/':
-        if (num2 != 0) {
-          BorbonTotal = num1 / num2;
-        } else {
-          setState(() {
-            result = 'Error: Division by zero!';
-          });
-          return;
-        }
-        break;
-      default:
-        return;
-    }
-
+  void _updateDisplay(String BorbonValue) {
     setState(() {
-      result = BorbonTotal.toString();
+      _displayText += BorbonValue;
     });
+  }
+
+  void _calculate() {
+    setState(() {
+      try {
+        final BorbonResult = evaluateExpression(_displayText);
+        _displayText = BorbonResult.toString();
+      } catch (e) {
+        _displayText = 'Error';
+      }
+    });
+  }
+
+  void _clearDisplay() {
+    setState(() {
+      _displayText = '';
+    });
+  }
+
+  double evaluateExpression(String expression) {
+    try {
+      final BorbonOperands = expression.split(RegExp(r'[-+*/]'));
+      final operators = expression.split(RegExp(r'[0-9.]'))
+        ..removeWhere((element) => element.isEmpty);
+
+      double BorbonResult = double.parse(BorbonOperands[0]);
+      for (int i = 1; i < BorbonOperands.length; i++) {
+        final double BorbonValue = double.parse(BorbonOperands[i]);
+
+        if (operators[i - 1] == '+') {
+          BorbonResult += BorbonValue;
+        } else if (operators[i - 1] == '-') {
+          BorbonResult -= BorbonValue;
+        } else if (operators[i - 1] == '*') {
+          BorbonResult *= BorbonValue;
+        } else if (operators[i - 1] == '/') {
+          BorbonResult /= BorbonValue;
+        }
+      }
+
+      return BorbonResult;
+    } catch (e) {
+      throw Exception('Invalid Expression');
+    }
   }
 
   @override
@@ -67,54 +82,94 @@ class _BorbonCalculatorState extends State<BorbonCalculator> {
       appBar: AppBar(
         title: Text('Calculator'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: num1Controller,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Enter the first number',
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              color: Colors.black,
+              padding: EdgeInsets.all(16),
+              alignment: Alignment.bottomRight,
+              child: Text(
+                _displayText,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 48,
+                ),
               ),
             ),
-            TextField(
-              controller: num2Controller,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Enter the second number',
+          ),
+          Row(
+            children: [
+              _buildButton('7'),
+              _buildButton('8'),
+              _buildButton('9'),
+              _buildButton('/'),
+            ],
+          ),
+          Row(
+            children: [
+              _buildButton('4'),
+              _buildButton('5'),
+              _buildButton('6'),
+              _buildButton('*'),
+            ],
+          ),
+          Row(
+            children: [
+              _buildButton('1'),
+              _buildButton('2'),
+              _buildButton('3'),
+              _buildButton('-'),
+            ],
+          ),
+          Row(
+            children: [
+              _buildButton('0'),
+              _buildButton('.'),
+              _buildButton('=', flex: 2),
+              _buildButton('+'),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    primary: Colors.white,
+                  ),
+                  child: Text('C'),
+                  onPressed: _clearDisplay,
+                ),
               ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'TOTAL: $result',
-              style: TextStyle(fontSize: 20.0),
-            ),
-            SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () => BorbonOperation('+'),
-                  child: Text('+'),
-                ),
-                ElevatedButton(
-                  onPressed: () => BorbonOperation('-'),
-                  child: Text('-'),
-                ),
-                ElevatedButton(
-                  onPressed: () => BorbonOperation('*'),
-                  child: Text('*'),
-                ),
-                ElevatedButton(
-                  onPressed: () => BorbonOperation('/'),
-                  child: Text('/'),
-                ),
-              ],
-            ),
-          ],
+              _buildButton('('),
+              _buildButton(')'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButton(String text, {int flex = 1}) {
+    return Expanded(
+      flex: flex,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.white,
+          primary: Colors.black,
         ),
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 35),
+        ),
+        onPressed: () {
+          if (text == '=') {
+            _calculate();
+          } else {
+            _updateDisplay(text);
+          }
+        },
       ),
     );
   }
